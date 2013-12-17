@@ -78,7 +78,7 @@ if(isset($_GET['jobId'])){
                                    <div id="search-ref"><strong>Salary Notes:</strong> <?php echo $r['salary_notes'];?></div>
                                    <div id="search-ref"><strong>Type of Employment:</strong> <?php echo $r['job_type'];?></div>
                                    <?php
-                                   $job_id = $r['jobs_id']; 
+                                   $job_id = $r['jobs_id'];  
 
 									   //$atag = "<a id='jobapply' class='button' href='#'>Apply Now<br>(not registered)</a>";
 									   $atag = "<a id='jobapply' class='button' href='#'>Apply Now</a>";
