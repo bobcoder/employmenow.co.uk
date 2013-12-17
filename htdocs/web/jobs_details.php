@@ -62,7 +62,7 @@ if(isset($_GET['jobId'])){
         <div id="wrapper">
             <div id="page" class="container">
                 <div id="content">
-                    <div class="twodivs" id="twodivs">
+                    <div class="twodivs" id="twodivs"> 
                         <div class="generalleft faded">
                             <h3>Job Details</h3>
                                    <div class="searchlongbox">
