@@ -1,0 +1,59 @@
+media all and (min-width: 650px){
+
+    .rightColumn{
+        width:56%;
+        float:right;
+        margin-left:4%;
+    }
+
+    .leftColumn{
+        width:40%;
+        float:left;
+    }
+
+}
+
+.product i{
+    display:block;
+    font-size:0.8em;
+    font-weight:normal;
+    font-style:normal;
+}
+
+.product img{
+    margin:10px;
+}
+
+.product b{
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 0.9em;
+}
+
+.product{
+    height: 80px;
+}
+
+#logo img{
+	max-width:100%;
+}
+#logo{
+	background-color:white;
+}
+.job_summary{
+	font-weight:normal;
+}
+label.error {
+		color: red;
+		font-size: 16px;
+		font-weight: normal;
+		line-height: 1.4;
+		margin-top: 0.5em;
+		width: 100%;
+		float: none;
+}
+label.missing  {
+  color:#FF0000;
+  font-weight:bold;
+}

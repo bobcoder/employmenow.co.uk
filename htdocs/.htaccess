@@ -1,0 +1,4 @@
+<Files _mailshot.php>
+ order allow,deny
+ deny from all
+</Files>

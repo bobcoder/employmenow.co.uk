@@ -1,0 +1,58 @@
+body {
+
+}
+/* The Main UL */
+#dropdown_nav {
+    width: 960px;
+    padding: 0px;
+    display: inline-block;
+    list-style: none;
+    border: 1px solid #ccc;
+    background: #e2e2e2;
+}
+
+#dropdown_nav li {
+    padding: 10px 0px 10px 0px;
+    float: left;
+    position: relative;
+    display: inline-block;
+}
+
+#dropdown_nav li a {
+    padding: 10px 15px 10px 15px;
+    border-right: 1px solid #ccc;
+}
+#dropdown_nav li a:hover {
+    background: #f9f9f9;
+}
+#dropdown_nav li a:active {
+    background: #ccc;
+}
+
+/* Sub-Nav styling */
+#dropdown_nav .sub_nav {
+    width: 160px;
+    padding: 0px;
+    position: absolute;
+    top: 38px;
+    left: 0px;
+    border: 1px solid #ccc;
+    background: #e2e2e2;
+}
+
+#dropdown_nav .sub_nav li {
+    width: 160px;
+    padding: 0px;
+}
+
+#dropdown_nav .sub_nav li a {
+    display: block;
+    border-bottom: 1px solid #ccc;
+}
+#dropdown_nav .sub_nav li a:hover {
+    background: #f9f9f9;
+}
+#dropdown_nav .sub_nav li a:active {
+    background: #ccc;
+}
+
