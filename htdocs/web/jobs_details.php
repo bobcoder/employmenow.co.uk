@@ -80,9 +80,17 @@ if(isset($_GET['jobId'])){
                                    <?php
                                    $job_id = $r['jobs_id'];  
 
-									   $atag = "<a id='jobapply' class='button' href='#'>Registered<br>
-									   <span style='font-size:60%'>(Login and apply)</span></a>";
-									   $atag = "<a id='jobapply' class='button' href='#'>Apply Now</a>";
+                                   if( isset($_SESSION['userid'])){
+                                   		$atag = "<a id='jobapply' class='button' href='#'>Apply<br>
+									   <span style='font-size:70%'>(Loggged In)</span></a>";
+                                   }else{
+                                   		$atag = "<a id='jobapply' class='button' href='#'>Registered<br>
+									   <span style='font-size:70%'>(Login and apply)</span></a>";
+                                   }
+									   
+									   
+									   $atag1 = "<a id='jobapply_notreg' class='button' href='#'>Not registered?<br>
+									   <span style='font-size:70%'>(Create your profile and apply)</span></a>";
 									   if($_GET['peek']=='true'){
 									   		$peek = "<a id='jobapply' class='button' href='candidate_jobs.php'>Back to your list</a>";
 									   }
@@ -174,7 +182,7 @@ if(isset($_GET['jobId'])){
     var user_li = '<?php echo $user_li; ?>';
     $("#jobapply").click(function(){
     	    if(user_li ==''){
-    			window.location.href = 'login.php';
+    			window.location.href = 'login.php?url=' + $(location).attr('href');
     		}
     	    $( "#dialog-confirm" ).dialog({
 		      resizable: false,
@@ -189,8 +197,10 @@ if(isset($_GET['jobId'])){
 		        }
 		      }
 		    });
-    })
-
+    });
+	$('#jobapply_notreg').click(function(e) {
+		window.location.href = 'register.php?url=' + $(location).attr('href');
+	});
 
 
     //Location blur event

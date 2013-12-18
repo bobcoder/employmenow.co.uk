@@ -23,8 +23,12 @@
           $_SESSION['name'] = $name;
           $_SESSION['email'] = $email;
           $_SESSION['mode'] = "user";
-	  $result = mysql_query("UPDATE `users` SET last_login = NOW()  WHERE `email`='$email'");
-          header("Location: ".$config['siteurl']."account.php");
+		  $result = mysql_query("UPDATE `users` SET last_login = NOW()  WHERE `email`='$email'");
+		  	if(isset($_GET['url'])){
+		  		header("Location: ". $_GET['url']);
+		  	}else{
+          		header("Location: ".$config['siteurl']."account.php");
+			}//ENd redirect from job condition
         }
       }
       else
