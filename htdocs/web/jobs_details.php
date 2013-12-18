@@ -80,7 +80,8 @@ if(isset($_GET['jobId'])){
                                    <?php
                                    $job_id = $r['jobs_id'];  
 
-									   //$atag = "<a id='jobapply' class='button' href='#'>Apply Now<br>(not registered)</a>";
+									   $atag = "<a id='jobapply' class='button' href='#'>Registered<br>
+									   <span style='font-size:60%'>(Login and apply)</span></a>";
 									   $atag = "<a id='jobapply' class='button' href='#'>Apply Now</a>";
 									   if($_GET['peek']=='true'){
 									   		$peek = "<a id='jobapply' class='button' href='candidate_jobs.php'>Back to your list</a>";
