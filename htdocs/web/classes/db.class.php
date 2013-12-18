@@ -11,10 +11,10 @@
 		$sql = "SELECT * FROM favorites WHERE user_id=$uid AND job_id=$jid";
 		$result = mysql_query($sql);
 		$numrows = mysql_num_rows ( $result );//GET count
-		if($numrows <>0){
-			return true;//FAV already in DB
+		if($numrows != 0){
+			return 'true';//FAV already in DB
 		}else{
-			return false;//Go ahead and add fav
+			return 'false';//Go ahead and add fav
 		}
  	}
  }

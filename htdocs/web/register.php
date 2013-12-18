@@ -2,6 +2,7 @@
   session_start();
   include("database.inc.php");
 
+	
   $error = "";
   if(isset($_POST['submit'])) {
     $name = mysql_real_escape_string($_POST['name']);
@@ -31,23 +32,25 @@
 
       $result = mysql_query("INSERT INTO `users` (`name`,`email`,`password`,`dob`,`town`,`county`,`how`,`phone`,`mobile`,`regdate`,`active`,`lat`,`lon`,`termsandconditions`,`last_login`) VALUES ('$name','$email','$password','$dob','$town','$county','$how','$phone','$mobile',NOW(),1,'".$coords['lat']."','".$coords['lon']."','2',NOW())");
 	  $new_user = mysql_insert_id();
-	$fav = new Fav();//Call the fav check exists class function
-	if($_SESSION['job_id'] != '' || $_SESSION['job_id'] != null){
+
+	if(isset($_SESSION['job_id']) && isset($new_user)){
+		$fav = new Fav();//Call the fav check exists class function
 		$job_id = $_SESSION['job_id'];
 		//Check if its already in favorites
 		$r = $fav->favExists($new_user, $job_id);
-			if($r === false){//NOT in DB
+			if($r == 'false'){//NOT in DB
 				//Put favorite in DB - User ID , Job ID
 				$fav_sql = "INSERT INTO `favorites`
 								(`user_id`,
 								`job_id`)
-								VALUES()
+								VALUES(
 								$new_user,
 								$job_id )";
-				$fav_result = mysql_query($fav_result);
+				$fav_result = mysql_query($fav_sql);
 				$_SESSION['new_fav'] = mysql_insert_id();
 				//Kill the session var
-				$_SESSION['job_id'] = '';
+				unset($_SESSION['job_id']);
+				$fav_added = 1;
 			}
 	}
 
@@ -153,7 +156,7 @@ $html2 = '
             $_SESSION['name'] = $name;
             $_SESSION['email'] = $email;
             $_SESSION['mode'] = "user";
-            header("Location: ".$config['siteurl']."account.php");
+            header("Location: ".$config['siteurl']."account.php?favadded=".$fav_added);
           }
         }
       }

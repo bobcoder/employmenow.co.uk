@@ -2,6 +2,7 @@
 session_start();
 include("database.inc.php");
 include("inc/mail.class.php");
+include_once("classes/db.class.php");
 //Store the job ID
 $jobs_id = mysql_real_escape_string($_GET['jobId']);
 $_SESSION['jobId'] = $jobs_id;
@@ -97,5 +98,29 @@ function send_mail($to_email, $sender_name, $from_email, $subject, $message){
          ->setWrap(100)
          ->send();
 		return ($send) ? 'Success' : 'Failed';
+}
+
+function addToFavs(){
+	//Add to favourites if the user wants to :-)
+	$fav = new Fav();//Call the fav check exists class function
+	if($_SESSION['job_id'] != '' || $_SESSION['job_id'] != null){
+		$job_id = $_SESSION['job_id'];
+		$uid = $_SESSION['userid'];
+		//Check if its already in favorites
+		$r = $fav->favExists($uid, $job_id);
+		if($r === false){//NOT in DB
+		  	//Put favorite in DB - User ID , Job ID
+		  	$fav_sql = "INSERT INTO `favorites`
+							(`user_id`,
+							`job_id`)
+							VALUES(
+							$uid ,
+							$job_id )";
+			$fav_result = mysql_query($fav_sql);
+			$_SESSION['new_fav'] = mysql_insert_id();
+			//Kill the session var
+			$_SESSION['job_id'] = '';
+		}
+	  }
 }
 ?>

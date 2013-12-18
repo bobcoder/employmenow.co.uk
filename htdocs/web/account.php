@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 include ("database.inc.php");
 //echo "Job = " . $_SESSION['job_id'];
 
@@ -162,179 +163,8 @@ if (isset($_POST['subSkills'])) {
         <script type="text/javascript" src="office/js/nav.js"></script>
         <script type="text/javascript" src="office/js/jquery.validate.min.js"></script>
         <script type="text/javascript" src="office/js/jquery.dateFormat-1.0.js"></script>
+		<script type="text/javascript" src="js/tinymce/tinymce.min.js"></script>
 
-<script>
-	$(function() {//ON dom ready
-			var surl = "<?php echo $_SESSION['search_url'];?>";
-			$('#searchurl').hide();
-			if( surl != ''){
-				$('#searchurl').show();
-				$('#searchurl').click(function (event){
-					event.preventDefault();
-					window.location.href = surl;
-				});
-			}
-			$("#content-home").tooltip();
-
-		if("<?php echo $_GET['msg'];?>" == 'true'){
-			$( "#dialog" ).dialog();
-		}
-		//TODO put in jqxgrid
-		//put in jqxgrid here
-		var data = {};
-		var theme = getDemoTheme();
-		var url = "inc/get_favs.inc.php?id=<?php echo $_SESSION['userid'] ?>";
-		var modUrl = "office/incs/db.inc.php1";
-		var source = {
-        datatype : "json",
-        datafields : [{
-            name : 'id',
-            type : 'int'
-        }, {
-            name : 'title',
-            type : 'string'
-        }, {
-            name : 'ref',
-            type : 'string'
-        }, {
-            name : 'date_expires',
-            type : 'date',
-        }, {
-            name : 'jobsid',
-            type : 'int'
-        }],
-        id : 'id',
-        url : url,
-        updaterow: function (rowid, rowdata, commit) {
-            // synchronize with the server - send update command
-            var data = "tbl=favorites&delete=true&" + $.param(rowdata);
-                $.ajax({
-                    dataType: 'json',
-                    url: modUrl,
-                    cache: false,
-                    data: data,
-                    success: function (data, status, xhr) {
-                        commit(true);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown)
-                    {
-                        console.log(textStatus);
-                        commit(false);
-                    }
-                });
-        },
-        deleterow: function (rowid, commit) {
-            var data = "tbl=favorites&delete=true&" + $.param({id: rowid});
-            console.log($.param({id: rowid}));
-
-            $.ajax({
-            	type:'post',
-                dataType: 'text',
-                url: 'inc/hide_fav.php',
-                cache: false,
-                data: data,
-                success: function (data, status, xhr) {
-                	console.log(data);
-                    $("#jqxgrid").jqxGrid('clearselection');
-                    commit(true);
-                },
-                error: function(jqXHR, textStatus, errorThrown)
-                {
-                    console.log(textStatus);
-                    commit(false);
-                }
-
-        });
-        },
-        sortcolumn : 'title',
-        sortdirection : 'asc',
-        pagesize : 10,
-        pager : function(pagenum, pagesize, oldpagenum) {
-        // callback called when a page or page size is changed.
-        }
-        };
-        //END source
-        var dataAdapter = new $.jqx.dataAdapter(source);
-        //Display Grid
-        var tday = $.format.date(new Date(), "dd-MM-yyyy");
-        $("#jqxgrid").jqxGrid({
-            width : 950,
-            source : dataAdapter,
-            theme : theme,
-            pageable : true,
-            pagesizeoptions: ['20', '30', '40'],
-            autoheight : true,
-            editable: false,
-            editmode: 'Double-Click',
-            columnsresize : false,
-            filterable : true,
-            sortable : false,
-            altrows : true,
-            selectionmode: 'singlerow',
-            columns : [{
-                text : 'ID',
-                datafield : 'id',
-                editable: false,
-                pinned: true,
-                width : 50,
-            }, {
-                text : 'Title',
-                datafield : 'title',
-                altrows : true,
-            }, {
-                text : 'Ref',
-                datafield : 'ref',
-            }, {
-                text : 'Expires',
-                datafield : 'date_expires',
-                cellsformat: 'dd-MM-yyyy',
-        		cellsrenderer: function (row, columnfield, value, defaulthtml, columnproperties) {
-        			//Establish if the job has expired
-
-					var d = $.format.date(value, "dd-MM-yyyy");
-/*
-					console.log(new Date(d).getTime() + ' ROW : ' + row);
-					console.log(new Date(tday).getTime() + ' ROW : ' + row);*/
-
-					if(new Date(d).getTime() > new Date(tday).getTime()){
-						//return '<span style="margin: 4px; float: ' + columnproperties.cellsalign + '; color: #ff0000;">' + d + '</span>';
-					}
-               },
-            },{
-                text: 'Action',
-                width : 90,
-                selectionmode: 'none',
-                datafield: 'Action',
-                columntype: 'button',
-                cellsrenderer: function () {
-                     return "Remove";
-                  }, buttonclick: function (row) {
-                     var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-                     var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
-                    if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                        var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
-                        $("#jqxgrid").jqxGrid('deleterow', id);
-                       }
-                       $('#jqxgrid').jqxGrid('unselectrow', selectedrowindex);
-                 }//END click
-            },{
-				text:'',
-				width: 90,
-				columntype: 'button',
-                cellsrenderer: function () {
-                     return "View Job";
-                 },
-				buttonclick: function (row) {
-					var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
-					var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
-					var griddata = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
-					console.log(griddata);
-					document.location.href='jobs_details.php?jobId=' + griddata.jobsid;
-				}
-            }]
-        });
-	});//END doc ready
-		</script>
 		<style>
 			label {
 				display: inline-block;
@@ -408,15 +238,7 @@ if(!stristr($_SERVER['HTTP_USER_AGENT'],"MSIE 7.0") && !stristr($_SERVER['HTTP_U
 				return ok;
 				}
 		</script>
-		<script type="text/javascript" src="js/tinymce/tinymce.min.js"></script>
-		<script type="text/javascript">
-			tinymce.init({
-				selector : "textarea.tinymce",
-				menubar : false,
-				statusbar : false,
-				mode : "textareas",
-			});
-		</script>
+
 	</head>
 
 	<body class="account">
@@ -446,7 +268,7 @@ if(!stristr($_SERVER['HTTP_USER_AGENT'],"MSIE 7.0") && !stristr($_SERVER['HTTP_U
 		$uid = $_SESSION['userid'];
 		//Check if its already in favorites
 		$r = $fav->favExists($uid, $job_id);
-		if($r === false){//NOT in DB
+		if($r == 'false'){//NOT in DB
 		  	//Put favorite in DB - User ID , Job ID
 		  	$fav_sql = "INSERT INTO `favorites`
 							(`user_id`,
@@ -473,6 +295,20 @@ if(!stristr($_SERVER['HTTP_USER_AGENT'],"MSIE 7.0") && !stristr($_SERVER['HTTP_U
 					<h2>
 					<?php echo "Welcome back " . $_SESSION['name'] . "!"; ?>
 					</h2>
+					
+					<div class="successbox" >
+					    Jobs added
+					</div>
+					<div class="warningbox" >
+					    Please complete all CV fields below to apply for jobs. Thank you
+					</div>
+					<div class="errormsgbox" >
+					    Please complete all CV fields below to apply for jobs. Thank you
+					</div>
+					
+					
+					
+					
 					<P>Please ensure all fields are complete for your CV to show online</P>
 					<?php
 $result = mysql_query("SELECT * FROM `users` WHERE `id`='".$_SESSION['userid']."'");
@@ -726,7 +562,7 @@ if ($booUpdateComplete)
 					<tr>
 					<td valign="top"><p><strong>Personal statement:</strong></p>
 					<p class="tip">&nbsp;</p></td>
-					<td colspan="4"><textarea title="A brief description about yourself e.g. Graduate, Mature. What you have to offer and your career aims" name="bio" style="width: 700px; height: 200px"><?php echo $user['bio']; ?></textarea></td>
+					<td colspan="4"><textarea title="A brief description about yourself e.g. Graduate, Mature. What you have to offer and your career aims" name="bio" id="bio" style="width: 700px; height: 200px"><?php echo $user['bio']; ?></textarea></td>
 					</tr>
 					<tr>
 					<td>&nbsp;</td>
@@ -737,13 +573,13 @@ if ($booUpdateComplete)
 					<tr>
 					<td valign="top"><p><strong>Interests and Hobbies:</strong></p>
 					<p class="tip">&nbsp;</p></td>
-					<td colspan="4"><textarea title="What you enjoy doing outside of work. This gives employers a better understanding about the candidate they are considering for employment"  name="achievements" style="width: 700px; height: 200px"><?php echo $user['achievements']; ?></textarea></td>
+					<td colspan="4"><textarea title="What you enjoy doing outside of work. This gives employers a better understanding about the candidate they are considering for employment"  name="achievements" id="achievements" style="width: 700px; height: 200px"><?php echo $user['achievements']; ?></textarea></td>
 					</tr>
 
 					<tr>
 					<td valign="top"><strong>Work Experience / History</strong></td>
 					<td colspan="4">
-					<textarea class="tinymce" name="workexperience_text">
+					<textarea class="tinymce" name="workexperience_text" id="workexperience_text">
 					<?php echo stripslashes($user['workexperience_text']); ?>
 					</textarea>
 					<p class="tip">If you are using a modern browser you will be able to extend the box above by stretching the bottom right corner</p>
@@ -807,9 +643,229 @@ if ($booUpdateComplete)
 	<div id="dialog" title="Application Sent">
 		<p><?php echo $msg2;?></p>
 	</div>
+	<div  style="display:none;">
 		<div id="dialogupdate" title="CV updated">
-		<p>Your new details have been saved.</p>
+			<p>Your job has been saved to favourites, please complete your profile before you view and apply.</p>
+		</div>
 	</div>
-
+	<div  style="display:none;">
+		<div id="dialogfav" title="Favourite added">
+			<p>You have added a job to your favourites.</p>
+		</div>
+	</div>
 	</body>
+<?php
+$ed_text =  strip_tags($user['education_text']);
+$work_text =  strip_tags($user['workexperience_text']);
+$achieve_text =  strip_tags($user['achievements']);
+$ed_bio =  strip_tags($user['bio']);
+$ed_headline =  strip_tags($user['headline']);
+
+if($ed_text !='' && $work_text !='' && $achieve_text !='' && $ed_bio !='' && $ed_headline !='' ){
+	$profile = 'true';
+}else{
+	$profile = 'false';
+}
+?>
+<script>
+	$(function() {//ON dom ready
+		
+		$('.successbox').hide();
+        $('.warningbox').hide();
+        $('.errormsgbox').hide();
+		var profile = "<?php echo $profile;?>";
+		console.log(profile);
+		if(profile == 'false'){
+			$('.errormsgbox').fadeIn(2000);
+			//$('#headline').css({'border' : '1px solid red'});
+		}
+			tinymce.init({
+				selector : "textarea.tinymce",
+				menubar : false,
+				statusbar : false,
+				setup: function(editor) {
+/*
+        			editor.on('GetContent', function(e) {
+            			console.log('GetContent event', e.content);
+        			});*/
+
+    			}
+				
+			});
+			var surl = "<?php echo $_SESSION['search_url'];?>";
+			var fav_added = "<?php echo $_GET['favadded'];?>";
+			if(fav_added == 1){
+				$( "#dialogfav" ).dialog();
+			}
+			
+			
+			$('#searchurl').hide();
+			if( surl != ''){
+				$('#searchurl').show();
+				$('#searchurl').click(function (event){
+					event.preventDefault();
+					window.location.href = surl;
+				});
+			}
+			$("#content-home").tooltip();
+
+		if("<?php echo $_GET['msg'];?>" == 'true'){
+			$( "#dialog" ).dialog();
+		}
+		//TODO put in jqxgrid
+		//put in jqxgrid here
+		var data = {};
+		var theme = getDemoTheme();
+		var url = "inc/get_favs.inc.php?id=<?php echo $_SESSION['userid'] ?>";
+		var modUrl = "office/incs/db.inc.php1";
+		var source = {
+        datatype : "json",
+        datafields : [{
+            name : 'id',
+            type : 'int'
+        }, {
+            name : 'title',
+            type : 'string'
+        }, {
+            name : 'ref',
+            type : 'string'
+        }, {
+            name : 'date_expires',
+            type : 'date',
+        }, {
+            name : 'jobsid',
+            type : 'int'
+        }],
+        id : 'id',
+        url : url,
+        updaterow: function (rowid, rowdata, commit) {
+            // synchronize with the server - send update command
+            var data = "tbl=favorites&delete=true&" + $.param(rowdata);
+                $.ajax({
+                    dataType: 'json',
+                    url: modUrl,
+                    cache: false,
+                    data: data,
+                    success: function (data, status, xhr) {
+                        commit(true);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown)
+                    {
+                        console.log(textStatus);
+                        commit(false);
+                    }
+                });
+        },
+        deleterow: function (rowid, commit) {
+            var data = "tbl=favorites&delete=true&" + $.param({id: rowid});
+            console.log($.param({id: rowid}));
+
+            $.ajax({
+            	type:'post',
+                dataType: 'text',
+                url: 'inc/hide_fav.php',
+                cache: false,
+                data: data,
+                success: function (data, status, xhr) {
+                    $("#jqxgrid").jqxGrid('clearselection');
+                    commit(true);
+                },
+                error: function(jqXHR, textStatus, errorThrown)
+                {
+                    console.log(textStatus);
+                    commit(false);
+                }
+
+        });
+        },
+        sortcolumn : 'title',
+        sortdirection : 'asc',
+        pagesize : 10,
+        pager : function(pagenum, pagesize, oldpagenum) {
+        // callback called when a page or page size is changed.
+        }
+        };
+        //END source
+        var dataAdapter = new $.jqx.dataAdapter(source);
+        //Display Grid
+        var tday = $.format.date(new Date(), "dd-MM-yyyy");
+        $("#jqxgrid").jqxGrid({
+            width : 950,
+            source : dataAdapter,
+            theme : theme,
+            pageable : true,
+            pagesizeoptions: ['20', '30', '40'],
+            autoheight : true,
+            editable: false,
+            editmode: 'Double-Click',
+            columnsresize : false,
+            filterable : true,
+            sortable : false,
+            altrows : true,
+            selectionmode: 'singlerow',
+            columns : [{
+                text : 'ID',
+                datafield : 'id',
+                editable: false,
+                pinned: true,
+                width : 50,
+            }, {
+                text : 'Title',
+                datafield : 'title',
+                altrows : true,
+            }, {
+                text : 'Ref',
+                datafield : 'ref',
+            }, {
+                text : 'Expires',
+                datafield : 'date_expires',
+                cellsformat: 'dd-MM-yyyy',
+        		cellsrenderer: function (row, columnfield, value, defaulthtml, columnproperties) {
+        			//Establish if the job has expired
+
+					var d = $.format.date(value, "dd-MM-yyyy");
+/*
+					console.log(new Date(d).getTime() + ' ROW : ' + row);
+					console.log(new Date(tday).getTime() + ' ROW : ' + row);*/
+
+					if(new Date(d).getTime() > new Date(tday).getTime()){
+						//return '<span style="margin: 4px; float: ' + columnproperties.cellsalign + '; color: #ff0000;">' + d + '</span>';
+					}
+               },
+            },{
+                text: 'Action',
+                width : 90,
+                selectionmode: 'none',
+                datafield: 'Action',
+                columntype: 'button',
+                cellsrenderer: function () {
+                     return "Remove";
+                  }, buttonclick: function (row) {
+                     var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+                     var rowscount = $("#jqxgrid").jqxGrid('getdatainformation').rowscount;
+                    if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                        var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
+                        $("#jqxgrid").jqxGrid('deleterow', id);
+                       }
+                       $('#jqxgrid').jqxGrid('unselectrow', selectedrowindex);
+                 }//END click
+            },{
+				text:'',
+				width: 90,
+				columntype: 'button',
+                cellsrenderer: function () {
+                     return "View Job";
+                 },
+				buttonclick: function (row) {
+					var selectedrowindex = $("#jqxgrid").jqxGrid('getselectedrowindex');
+					var id = $("#jqxgrid").jqxGrid('getrowid', selectedrowindex);
+					var griddata = $('#jqxgrid').jqxGrid('getrowdata', selectedrowindex);
+					console.log(griddata);
+					document.location.href='jobs_details.php?jobId=' + griddata.jobsid;
+				}
+            }]
+        });
+
+	});//END doc ready
+		</script>
 </html>

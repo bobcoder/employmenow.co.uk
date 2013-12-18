@@ -1491,3 +1491,27 @@ ul.style1 .first {
 .clear-both{
     clear:both;
 }
+.successbox, .warningbox, .errormsgbox {
+ font-weight:bold;
+ border: 2px solid;
+ margin: 10px 0px;
+ padding:15px 10px 15px 70px;
+ background-repeat: no-repeat;
+ background-position: 10px center;
+ width:600px;
+}
+.successbox {
+ color: #4F8A10;
+ background-color:#EDFCED;
+/* background-image:url('images/success.png');*/
+}
+.warningbox {
+ color: #FFE222;
+ background-color:#FAF9C9;
+/* background-image: url('images/warning.png');*/
+}
+.errormsgbox {
+ color: #D8000C;
+ background-color:#FDD5CE;
+/* background-image: url('images/error.png');*/
+}

@@ -159,12 +159,14 @@ if(isset($_GET['jobId'])){
                     </div>
                 </div>
             </div>
-            <div id="dialog-confirm" title="Check CV?">
-  				<p class="dialog-confirm">
-  					<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-  					Would you like to check your CV before applying?
-  					<!--Register now/or login and complete your profile to apply-->
-  				</p>
+            <div  style="display:none;">
+	            <div id="dialog-confirm" title="Check CV?">
+	  				<p class="dialog-confirm">
+	  					<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+	  					Would you like to check your CV before applying?
+	  					<!--Register now/or login and complete your profile to apply-->
+	  				</p>
+				</div>
 			</div>
             <div id="footer">
                 <?php
